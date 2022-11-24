@@ -28,9 +28,9 @@ contract NFTDrop is
     bytes32 public constant ADMIN = keccak256("ADMIN");
 
     /**
-     * @notice Called first in the initialize (RWAT) contract upon deployment. Functions with
+     * @notice Called first in the initialize (NFTDrop) contract upon deployment. Functions with
      * state variables that are not stated as CONSTANTS are required to be declared with
-     * the onlyInitalizing statement, to not interrupt the initialize call in the RWAT contract.
+     * the onlyInitalizing statement, to not interrupt the initialize call in the NFTDrop contract.
      */
 
     function initialize(
@@ -116,7 +116,7 @@ contract NFTDrop is
     }
 
     /**
-     * @notice Mints drops with respective ID as long as the max amount
+     * @notice Mints drop with respective ID as long as the max amount
      * of minted drops has not been exceeded.
      */
 
@@ -137,7 +137,7 @@ contract NFTDrop is
     }
 
     /**
-     * @notice Lets user claim their share in the shape of nfts
+     * @notice Lets user claim their share in the form of nfts
      * @dev Requires server sig and the token drop to exist.
      */
     function buyShare(
@@ -166,7 +166,7 @@ contract NFTDrop is
     }
 
     /**
-     * @dev Returns the unit to this contract from an investor.
+     * @dev Returns the share to the contract from an investor.
      */
     function returnShare(
         address _from,
