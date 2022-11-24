@@ -1,5 +1,5 @@
 {
-  "name": "bloqh",
+  "name": "coritenftdrop",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "@openzeppelin/hardhat-upgrades": "^1.21.0",
     "hardhat": "^2.12.2"
   },
