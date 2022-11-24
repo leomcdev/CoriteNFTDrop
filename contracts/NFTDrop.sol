@@ -60,6 +60,7 @@ contract NFTDrop is
     mapping(address => bool) public isWhitelisted;
 
     bool pausedTransfers;
+    bool whitelistDisabled;
     mapping(uint256 => bool) public dropPaused;
 
     mapping(uint256 => uint256) private nextId;
@@ -74,8 +75,6 @@ contract NFTDrop is
     address serverPubKey;
     string name_;
     string symbol_;
-
-    bool whitelistDisabled;
 
     /**
      * @notice Creates the drop with a token cap.
