@@ -11,7 +11,7 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "../interfaces/ICNR.sol";
 
 /**
- * @title Real world asset tokenization contract to fractionalize real-estate into shares.
+ * @title Real world drop tokenization contract to fractionalize real-estate into shares.
  * @dev Should hold no data directly to be easily upgraded
  *
  * Upgrading this contract and adding new parent can be done while there is no dynamic
@@ -19,7 +19,7 @@ import "../interfaces/ICNR.sol";
  * to the currently inherited contracts.
  */
 
-contract RWAT is
+contract NFTDrop is
     Initializable,
     ERC721Upgradeable,
     AccessControlUpgradeable,
@@ -49,10 +49,10 @@ contract RWAT is
     }
 
     // ------------ Events
-    event UnitsClaimed(address claimant, uint256[] tokenIds);
+    event SharesBought(address claimant, uint256[] tokenIds);
     event EarningsClaimed(
         address claimant,
-        uint256 assetId,
+        uint256 nftDropId,
         uint256[] tokenIds
     );
 
@@ -60,84 +60,87 @@ contract RWAT is
     mapping(address => bool) public isWhitelisted;
 
     bool pausedTransfers;
-    mapping(uint256 => bool) public assetPaused;
+    mapping(uint256 => bool) public dropPaused;
 
     mapping(uint256 => uint256) private nextId;
     mapping(uint256 => uint256) private lastId;
 
-    mapping(uint256 => IERC20Upgradeable) public assetEarningsToken;
+    mapping(uint256 => IERC20Upgradeable) public rewardToken;
     mapping(uint256 => uint256) public totalShareEarnings;
     mapping(uint256 => uint256) public claimedEarnings;
 
-    mapping(uint256 => uint256) private assetIdToAssetCap;
+    mapping(uint256 => uint256) private nftDropIdToNftCap;
 
     address serverPubKey;
     string name_;
     string symbol_;
 
+    bool whitelistDisabled;
+
     /**
-     * @notice Creates the asset with a token cap.
+     * @notice Creates the drop with a token cap.
      * @dev 9 zeros are added.
      */
-    function createAsset(
-        uint256 _assetId,
+    function createNftDrop(
+        uint256 _nftDropId,
         uint256 _tokenCap,
-        IERC20Upgradeable _EarningsToken
+        IERC20Upgradeable _earningsToken
     ) external onlyRole(ADMIN) {
-        require(nextId[_assetId] == 0, "Asset already exists");
+        require(nextId[_nftDropId] == 0, "Drop already exists");
         require(
-            nextId[_assetId] < _tokenCap,
-            "Asset ID can't be higher than max token cap"
+            nextId[_nftDropId] < _tokenCap,
+            "Drop ID can't be higher than max token cap"
         );
-        assetEarningsToken[_assetId] = _EarningsToken;
-        nextId[_assetId] = _assetId * 1_000_000_000;
-        lastId[_assetId] = _assetId * 1_000_000_000 + _tokenCap;
+        rewardToken[_nftDropId] = _earningsToken;
+        nextId[_nftDropId] = _nftDropId * 1_000_000_000;
+        lastId[_nftDropId] = _nftDropId * 1_000_000_000 + _tokenCap;
 
-        assetIdToAssetCap[_assetId] = _tokenCap;
+        nftDropIdToNftCap[_nftDropId] = _tokenCap;
     }
 
     /**
-     * @notice Updates asset cap.
+     * @notice Updates drop cap. If the nft sells out extremely quick and
+     * the demand is high, this could be an option.
      */
-    function updateAssetCap(uint256 _assetId, uint256 _tokenCap)
+    function updateNftDrop(uint256 _nftDropId, uint256 _tokenCap)
         external
         onlyRole(ADMIN)
     {
         require(
-            nextId[_assetId] <= _assetId * 1_000_000_000 + _tokenCap,
-            "Asset cap can not be lower than minted amount"
+            nextId[_nftDropId] <= _nftDropId * 1_000_000_000 + _tokenCap,
+            "Drop cap can not be lower than minted amount"
         );
-        lastId[_assetId] = _assetId * 1_000_000_000 + _tokenCap;
+        lastId[_nftDropId] = _nftDropId * 1_000_000_000 + _tokenCap;
 
-        assetIdToAssetCap[_assetId] = _tokenCap;
+        nftDropIdToNftCap[_nftDropId] = _tokenCap;
     }
 
     /**
-     * @notice Mints assets with respective ID as long as the max amount
-     * of minted assets has not been exceeded.
+     * @notice Mints drops with respective ID as long as the max amount
+     * of minted drops has not been exceeded.
      */
 
-    function mintAsset(uint256 _assetId, uint256 _amount)
+    function mintNftDrop(uint256 _nftDropId, uint256 _amount)
         external
         onlyRole(ADMIN)
     {
         require(
-            (nextId[_assetId] + _amount) <= lastId[_assetId],
+            (nextId[_nftDropId] + _amount) <= lastId[_nftDropId],
             "Amount exceeds max"
         );
-        uint256 mints = nextId[_assetId] + _amount;
+        uint256 mints = nextId[_nftDropId] + _amount;
 
-        for (uint256 i = nextId[_assetId]; i < mints; i++) {
+        for (uint256 i = nextId[_nftDropId]; i < mints; i++) {
             _mint(address(this), i);
         }
-        nextId[_assetId] = mints;
+        nextId[_nftDropId] = mints;
     }
 
     /**
-     * @notice Lets user claim their total share upon the current timeframe.
-     * @dev Requires server sig and the token asset to exist.
+     * @notice Lets user claim their share in the shape of nfts
+     * @dev Requires server sig and the token drop to exist.
      */
-    function claimUnits(
+    function buyShare(
         uint256[] calldata _tokenIds,
         bytes memory _prefix,
         uint8 _v,
@@ -155,22 +158,22 @@ contract RWAT is
             "Invalid signature"
         );
 
-        uint256 assetId = _getTokenAsset(_tokenIds[0]);
-        uint256 totalClaim = totalShareEarnings[assetId];
-        _setClaimed(assetId, _tokenIds, totalClaim);
-        _claimUnits(address(this), msg.sender, _tokenIds);
-        emit UnitsClaimed(msg.sender, _tokenIds);
+        uint256 nftDropId = _getNftDrop(_tokenIds[0]);
+        uint256 totalClaim = totalShareEarnings[nftDropId];
+        _setClaimed(nftDropId, _tokenIds, totalClaim);
+        _claimNftShare(address(this), msg.sender, _tokenIds);
+        emit SharesBought(msg.sender, _tokenIds);
     }
 
     /**
      * @dev Returns the unit to this contract from an investor.
      */
-    function returnUnits(
+    function returnShare(
         address _from,
         address _to,
         uint256[] calldata _tokenIds
     ) external onlyRole(ADMIN) {
-        _claimUnits(_from, _to, _tokenIds);
+        _claimNftShare(_from, _to, _tokenIds);
     }
 
     /**
@@ -188,9 +191,9 @@ contract RWAT is
     }
 
     /**
-     * @notice User claim units.
+     * @notice Used for users to claim shares.
      */
-    function _claimUnits(
+    function _claimNftShare(
         address _from,
         address _to,
         uint256[] calldata _tokenIds
@@ -202,50 +205,58 @@ contract RWAT is
     }
 
     /**
-     * @notice Set units to claimed.
+     * @notice Set shares to claimed.
      */
     function _setClaimed(
-        uint256 _assetId,
+        uint256 _nftDropId,
         uint256[] calldata _tokenIds,
         uint256 _amount
     ) internal {
         uint256 length = _tokenIds.length;
         for (uint256 i = 0; i < length; i++) {
             require(
-                _getTokenAsset(_tokenIds[i]) == _assetId,
-                "Invalid token for asset"
+                _getNftDrop(_tokenIds[i]) == _nftDropId,
+                "Invalid token for drop"
             );
             claimedEarnings[_tokenIds[i]] = _amount;
         }
     }
 
     /**
-     * @notice Calculates and adds the earnings to a asset.
+     * @notice Calculates and adds the earnings to a drop.
+     * @dev Add total earnings per deposit. If its a total of 10
+     * deposits with a total of 10 eth, add 1 eth per time etc.
      */
     function addEarnings(
-        uint256 _assetId,
-        uint256 _totalEarnings,
-        uint256 _unitsCount,
-        uint256 _amountPerShare
+        uint256 _nftDropId,
+        uint256 _totalEarningsPerTime, // total earnings
+        uint256 _sharesCount, // how many nfts total for the drop
+        uint256 _earningsAmountPerNFT // earnings amount per nft for corite
     ) external onlyRole(ADMIN) {
         require(
-            _totalEarnings / _unitsCount == _amountPerShare,
+            _totalEarningsPerTime / _sharesCount == _earningsAmountPerNFT,
             "Invalid input data"
         );
-        _addEarnings(msg.sender, _assetId, _totalEarnings, _amountPerShare);
+
+        _addEarnings(
+            msg.sender,
+            _nftDropId,
+            _totalEarningsPerTime,
+            _earningsAmountPerNFT
+        );
     }
 
     /**
-     * @dev Add earnings into contract to later be added to the respecive assets.
+     * @dev Add earnings into contract to later be added to the respecive drops.
      */
     function _addEarnings(
         address _from,
-        uint256 _assetId,
+        uint256 _nftDropId,
         uint256 _totalEarnings,
-        uint256 _amountPerToken
+        uint256 _amountPerNFT
     ) internal {
-        totalShareEarnings[_assetId] += _amountPerToken;
-        assetEarningsToken[_assetId].transferFrom(
+        totalShareEarnings[_nftDropId] += _amountPerNFT;
+        rewardToken[_nftDropId].transferFrom(
             _from,
             address(this),
             _totalEarnings
@@ -258,43 +269,45 @@ contract RWAT is
      */
     function claimEarnings(
         address _owner,
-        uint256 _assetId,
+        uint256 _nftDropId,
         uint256[] calldata _tokenIds
     ) external whenNotPaused {
         require(isWhitelisted[_owner], "Owner is not whitelisted");
         uint256 totalToGet;
         uint256 length = _tokenIds.length;
-        uint256 totalAssetEarnings = totalShareEarnings[_assetId];
+        uint256 totalEarningsPerNftDrop = totalShareEarnings[_nftDropId];
         for (uint256 i = 0; i < length; i++) {
             require(ownerOf(_tokenIds[i]) == _owner, "Invalid token owner");
             require(
-                _getTokenAsset(_tokenIds[i]) == _assetId,
-                "Invalid token for asset"
+                _getNftDrop(_tokenIds[i]) == _nftDropId,
+                "Invalid token for drop"
             );
-            totalToGet += totalAssetEarnings - claimedEarnings[_tokenIds[i]];
-            claimedEarnings[_tokenIds[i]] = totalAssetEarnings;
+            totalToGet +=
+                totalEarningsPerNftDrop -
+                claimedEarnings[_tokenIds[i]];
+            claimedEarnings[_tokenIds[i]] = totalEarningsPerNftDrop;
         }
-        assetEarningsToken[_assetId].transferFrom(
-            address(this),
-            _owner,
-            totalToGet
-        );
-        emit EarningsClaimed(msg.sender, _assetId, _tokenIds);
+        rewardToken[_nftDropId].transferFrom(address(this), _owner, totalToGet);
+        emit EarningsClaimed(msg.sender, _nftDropId, _tokenIds);
+    }
+
+    function updateServer(address _serverPubKey) external onlyRole(ADMIN) {
+        serverPubKey = _serverPubKey;
+    }
+
+    function setwhitelistDisabled(bool _disable) external onlyRole(ADMIN) {
+        whitelistDisabled = _disable;
     }
 
     function setTransfersPaused(bool _paused) external onlyRole(ADMIN) {
         pausedTransfers = _paused;
     }
 
-    function setAssetTransfersPaused(uint256 _assetId, bool _paused)
+    function setDropTransfersPaused(uint256 _nftDropId, bool _paused)
         external
         onlyRole(ADMIN)
     {
-        assetPaused[_assetId] = _paused;
-    }
-
-    function updateServer(address _serverPubKey) external onlyRole(ADMIN) {
-        serverPubKey = _serverPubKey;
+        dropPaused[_nftDropId] = _paused;
     }
 
     function pause() external onlyRole(ADMIN) {
@@ -303,24 +316,6 @@ contract RWAT is
 
     function unpause() external onlyRole(ADMIN) {
         _unpause();
-    }
-
-    /**
-     * @notice Get current asset cap
-     */
-    function getAssetCap(uint256 _assetId) public view returns (uint256) {
-        return assetIdToAssetCap[_assetId];
-    }
-
-    /**
-     * @notice Get total minted assets in circulation
-     */
-    function getTotalMinted(uint256 _assetId) public view returns (uint256) {
-        return nextId[_assetId] - 1_000_000_000;
-    }
-
-    function _getTokenAsset(uint256 _tokenId) internal pure returns (uint256) {
-        return _tokenId / 1_000_000_000;
     }
 
     /**
@@ -343,6 +338,24 @@ contract RWAT is
     }
 
     /**
+     * @notice Get current drop cap
+     */
+    function getNftDropCap(uint256 _nftDropId) public view returns (uint256) {
+        return nftDropIdToNftCap[_nftDropId];
+    }
+
+    /**
+     * @notice Get total minted drops in circulation
+     */
+    function getTotalMinted(uint256 _nftDropId) public view returns (uint256) {
+        return nextId[_nftDropId] - 1_000_000_000;
+    }
+
+    function _getNftDrop(uint256 _tokenId) internal pure returns (uint256) {
+        return _tokenId / 1_000_000_000;
+    }
+
+    /**
      * @notice Overrides the _beforeTokenTransfer in the ERC721Upgradeable contract
      * @dev Checks state and that users are whitelisted.
      */
@@ -354,11 +367,16 @@ contract RWAT is
         super._beforeTokenTransfer(from, to, tokenId);
         if (!(from == address(0) || from == address(this))) {
             require(!pausedTransfers, "Transfers are currently paused");
-            require(!assetPaused[_getTokenAsset(tokenId)], "Asset is paused");
             require(
-                isWhitelisted[from] && isWhitelisted[to],
-                "Invalid token transfer"
+                !dropPaused[_getNftDrop(tokenId)],
+                "Drop is currently paused"
             );
+            if (!whitelistDisabled) {
+                require(
+                    isWhitelisted[from] && isWhitelisted[to],
+                    "Invalid token transfer"
+                );
+            }
         }
     }
 
@@ -384,6 +402,4 @@ contract RWAT is
     {
         return super.supportsInterface(interfaceId);
     }
-
-    uint256[1000] private __gap;
 }

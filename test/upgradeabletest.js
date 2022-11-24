@@ -12,70 +12,71 @@ describe("Whitelist", function () {
     // CNR = await help.setCNR();
     testToken = await help.setTestToken();
 
-    const Rwat = await ethers.getContractFactory("RWAT");
-    const rwat = await upgrades.deployProxy(
-      Rwat,
+    const NFTDrop = await ethers.getContractFactory("NFTDrop");
+    const nftdrop = await upgrades.deployProxy(
+      NFTDrop,
       [owner.address, "tokenName", "tokenSymbol", CNR],
       {
         initializer: "initialize",
       }
     );
-    await rwat.deployed();
+    await nftdrop.deployed();
 
-    let ADMIN = await rwat.ADMIN();
-    await rwat.grantRole(ADMIN, owner.address);
+    let ADMIN = await nftdrop.ADMIN();
+    await nftdrop.grantRole(ADMIN, owner.address);
   });
   it("Should work", async function () {
-    const Rwat = await ethers.getContractFactory("RWAT");
-    const rwat = await upgrades.deployProxy(
-      Rwat,
+    const NFTDrop = await ethers.getContractFactory("NFTDrop");
+    const nftdrop = await upgrades.deployProxy(
+      NFTDrop,
       [owner.address, "tokenName", "tokenSymbol", CNR],
       {
         initializer: "initialize",
       }
     );
-    await rwat.deployed();
+    await nftdrop.deployed();
 
-    let ADMIN = await rwat.ADMIN();
-    await rwat.grantRole(ADMIN, owner.address);
-    await rwat.grantRole(ADMIN, provider.address);
+    let ADMIN = await nftdrop.ADMIN();
+    await nftdrop.grantRole(ADMIN, owner.address);
+    await nftdrop.grantRole(ADMIN, provider.address);
 
-    await rwat.createAsset(1, 300, testToken.address);
-    await rwat.mintAsset(1, 100);
-    console.log("total assets in circulation", await rwat.getTotalMinted(1));
-    await rwat.setWhitelisted([investor.address], true);
+    await nftdrop.createNftDrop(1, 300, testToken.address);
+    await nftdrop.mintNftDrop(1, 100);
+
+    console.log("total assets in circulation", await nftdrop.getTotalMinted(1));
+    await nftdrop.setWhitelisted([investor.address], true);
     console.log(investor.address);
     let units = [1000000000, 1000000001, 1000000002];
 
-    console.log("current asset cap", await rwat.getAssetCap(1));
+    console.log("current asset cap", await nftdrop.getNftDropCap(1));
 
-    await rwat.updateAssetCap(1, 1000);
-    console.log("asset cap after update", await rwat.getAssetCap(1));
+    await nftdrop.updateNftDrop(1, 1000);
+    console.log("asset cap after update", await nftdrop.getNftDropCap(1));
 
-    await rwat.mintAsset(1, 150);
+    await nftdrop.mintNftDrop(1, 150);
 
     console.log(
       "total assets in circulation after creating more",
-      await rwat.getTotalMinted(1)
+      await nftdrop.getTotalMinted(1)
     );
 
     let obj = ethers.utils.defaultAbiCoder.encode(
       ["address", "address", "uint[]"],
-      [investor.address, rwat.address, units]
+      [investor.address, nftdrop.address, units]
     );
     const { prefix, v, r, s } = await createSignature(obj);
 
-    await rwat.updateServer(provider.address);
+    await nftdrop.updateServer(provider.address);
 
-    await rwat.connect(investor).claimUnits(units, prefix, v, r, s);
+    await nftdrop.connect(investor).buyShare(units, prefix, v, r, s);
 
-    expect(await rwat.ownerOf(1000000002)).to.be.equal(investor.address);
-    // console.log(await rwat.balanceOf(investor.address));
+    expect(await nftdrop.ownerOf(1000000002)).to.be.equal(investor.address);
+    // console.log(await nftdrop.balanceOf(investor.address));
 
     console.log(
       "hash admin",
       ethers.utils.keccak256(ethers.utils.toUtf8Bytes("ADMIN")),
-      rwat.address
+      nftdrop.address
     );
   });
 
