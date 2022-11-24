@@ -102,7 +102,7 @@ contract NFTDrop is
      * @notice Updates drop cap. If the nft sells out extremely quick and
      * the demand is high, this could be an option.
      */
-    function updateNftDrop(uint256 _nftDropId, uint256 _tokenCap)
+    function updateNftDropCap(uint256 _nftDropId, uint256 _tokenCap)
         external
         onlyRole(ADMIN)
     {
