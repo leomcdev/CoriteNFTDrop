@@ -146,10 +146,7 @@ contract NFTDrop is
      * @dev Requires server sig and the token drop to exist.
      */
 
-    // 3 funktioner
-
     // sen ska också corite kunna skicka shares till användare, där corite betalar för gas osv,
-    // där användaren betalar med fiat eller vad som
     function sendSharesToUser(
         uint256 _assetId,
         address _to,
@@ -161,7 +158,6 @@ contract NFTDrop is
     }
 
     // en användare ska kunna göra en transaktion med signatur och få sina nfts i en transaktion
-    // endast fiat nu, lägg till till crypto också
     function claimShares(
         uint256[] calldata _tokenIds,
         bytes memory _prefix,
@@ -197,7 +193,13 @@ contract NFTDrop is
         bytes32 _r,
         bytes32 _s
     ) external whenNotPaused {
-        bytes memory message = abi.encode(msg.sender, address(this), _amount);
+        bytes memory message = abi.encode(
+            msg.sender,
+            address(this),
+            _tokenIds,
+            _amount,
+            _paymentTokenAddress
+        );
         require(
             ecrecover(
                 keccak256(abi.encodePacked(_prefix, message)),
