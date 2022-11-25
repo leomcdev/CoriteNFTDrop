@@ -146,7 +146,6 @@ contract NFTDrop is
      * @dev Requires server sig and the token drop to exist.
      */
 
-    // sen ska också corite kunna skicka shares till användare, där corite betalar för gas osv,
     function sendSharesToUser(
         uint256 _assetId,
         address _to,
@@ -157,7 +156,6 @@ contract NFTDrop is
         _claimNftShare(address(this), _to, _tokenIds);
     }
 
-    // en användare ska kunna göra en transaktion med signatur och få sina nfts i en transaktion
     function claimShares(
         uint256[] calldata _tokenIds,
         bytes memory _prefix,
@@ -183,7 +181,6 @@ contract NFTDrop is
         emit SharesBought(msg.sender, _tokenIds);
     }
 
-    // betala med crypto, ska vara samma som rewardtoken med signatur, där dem betalar i samma transaktion
     function buyShares(
         uint256[] calldata _tokenIds,
         uint256 _amount,
