@@ -152,6 +152,17 @@ contract NFTDrop is
         uint256 _amount,
         uint256[] calldata _tokenIds
     ) external onlyRole(ADMIN) {
+        uint256 length = _tokenIds.length;
+        for (uint256 i = 0; i < length; i++) {
+            require(
+                address(this) == ownerOf(_tokenIds[i]),
+                "NFTs needs to be owned by this contract or yet to be minted"
+            );
+        }
+        require(
+            _amount == length,
+            "Amount and amount of nfts to send needs to be the same"
+        );
         _setClaimed(_assetId, _tokenIds, _amount);
         _claimNftShare(address(this), _to, _tokenIds);
     }
@@ -184,7 +195,7 @@ contract NFTDrop is
     function buyShares(
         uint256[] calldata _tokenIds,
         uint256 _amount,
-        address _paymentTokenAddress,
+        IERC20Upgradeable _rewardToken,
         bytes memory _prefix,
         uint8 _v,
         bytes32 _r,
@@ -195,7 +206,7 @@ contract NFTDrop is
             address(this),
             _tokenIds,
             _amount,
-            _paymentTokenAddress
+            _rewardToken
         );
         require(
             ecrecover(
@@ -207,7 +218,7 @@ contract NFTDrop is
             "Invalid signature"
         );
 
-        IERC20Upgradeable(_paymentTokenAddress).transferFrom(
+        IERC20Upgradeable(_rewardToken).transferFrom(
             msg.sender,
             address(this),
             _amount
