@@ -4,7 +4,7 @@ const { ethers, upgrades } = require("hardhat");
 
 CNR = "0x0cadb0d9e410072325d2acc00aab99eb795a8c86";
 
-describe("Whitelist", function () {
+describe("Test", function () {
   let owner, provider, investor, testToken;
 
   beforeEach(async function () {
@@ -79,7 +79,21 @@ describe("Whitelist", function () {
       nftdrop.address
     );
   });
+  it("test claim earnings", async function () {
+    const NFTDrop = await ethers.getContractFactory("NFTDrop");
+    const nftdrop = await upgrades.deployProxy(
+      NFTDrop,
+      [owner.address, "tokenName", "tokenSymbol", CNR],
+      {
+        initializer: "initialize",
+      }
+    );
+    await nftdrop.deployed();
 
+    let ADMIN = await nftdrop.ADMIN();
+    await nftdrop.grantRole(ADMIN, owner.address);
+    await nftdrop.grantRole(ADMIN, provider.address);
+  });
   async function createSignature(obj) {
     obj = ethers.utils.arrayify(obj);
     const prefix = ethers.utils.toUtf8Bytes(

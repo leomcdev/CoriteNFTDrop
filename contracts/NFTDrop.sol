@@ -11,12 +11,16 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "../interfaces/ICNR.sol";
 
 /**
- * @title Real world drop tokenization contract to fractionalize real-estate into shares.
+ * @title NFT Drop contract where users buy nfts that represents a song share for a certain artist.
+ * Each song share represents a percentage of the upcoming yield of a artists new song/album will generate.
+ * By holding these song shares, the investor receives APR in relation to the time schedule.
+  
  * @dev Should hold no data directly to be easily upgraded
  *
  * Upgrading this contract and adding new parent can be done while there is no dynamic
- * state variables in this contract. All new inherited contracts must be appeneded
- * to the currently inherited contracts.
+ * state variables in this contract. When upgrading the contract, all new inherited contracts must be appeneded
+ * to the currently inherited contracts, if any. All state variables as well as new functions 
+ * must also be appended for the upgrade to be successful.
  */
 
 contract NFTDrop is
@@ -30,7 +34,7 @@ contract NFTDrop is
     /**
      * @notice Called first in the initialize (NFTDrop) contract upon deployment. Functions with
      * state variables that are not stated as CONSTANTS are required to be declared with
-     * the onlyInitalizing statement, to not interrupt the initialize call in the NFTDrop contract.
+     * the onlyInitalizing statement, to not interrupt the initialize call in this contract.
      */
 
     function initialize(
