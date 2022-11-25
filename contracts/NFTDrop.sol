@@ -75,6 +75,8 @@ contract NFTDrop is
     mapping(uint256 => uint256) public claimedEarnings;
 
     mapping(uint256 => uint256) private nftDropIdToNftCap;
+    mapping(uint256 => uint256[]) public lastNFTBoughtOrClaimed;
+    uint256 lastBoughtOrClaimed;
 
     address serverPubKey;
     string name_;
@@ -143,7 +145,24 @@ contract NFTDrop is
      * @notice Lets user claim their share in the form of nfts
      * @dev Requires server sig and the token drop to exist.
      */
-    function buyShare(
+
+    // 3 funktioner
+
+    // sen ska också corite kunna skicka shares till användare, där corite betalar för gas osv,
+    // där användaren betalar med fiat eller vad som
+    function sendSharesToUser(
+        uint256 _assetId,
+        address _to,
+        uint256 _amount,
+        uint256[] calldata _tokenIds
+    ) external onlyRole(ADMIN) {
+        _setClaimed(_assetId, _tokenIds, _amount);
+        _claimNftShare(address(this), _to, _tokenIds);
+    }
+
+    // en användare ska kunna göra en transaktion med signatur och få sina nfts i en transaktion
+    // endast fiat nu, lägg till till crypto också
+    function claimShares(
         uint256[] calldata _tokenIds,
         bytes memory _prefix,
         uint8 _v,
@@ -168,29 +187,38 @@ contract NFTDrop is
         emit SharesBought(msg.sender, _tokenIds);
     }
 
-    /**
-     * @dev Returns the share to the contract from an investor.
-     */
-    function returnShare(
-        address _from,
-        address _to,
-        uint256[] calldata _tokenIds
-    ) external onlyRole(ADMIN) {
-        _claimNftShare(_from, _to, _tokenIds);
-    }
+    // betala med crypto, ska vara samma som rewardtoken med signatur, där dem betalar i samma transaktion
+    function buyShares(
+        uint256[] calldata _tokenIds,
+        uint256 _amount,
+        address _paymentTokenAddress,
+        bytes memory _prefix,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s
+    ) external whenNotPaused {
+        bytes memory message = abi.encode(msg.sender, address(this), _amount);
+        require(
+            ecrecover(
+                keccak256(abi.encodePacked(_prefix, message)),
+                _v,
+                _r,
+                _s
+            ) == serverPubKey,
+            "Invalid signature"
+        );
 
-    /**
-     * @notice Whitelists multiple users to be available for shares.
-     * @dev Also deWhitelists users by setting to false.
-     */
-    function setWhitelisted(address[] calldata _users, bool _whitelisted)
-        external
-        onlyRole(ADMIN)
-    {
-        uint256 length = _users.length;
-        for (uint256 i = 0; i < length; i++) {
-            isWhitelisted[_users[i]] = _whitelisted;
-        }
+        IERC20Upgradeable(_paymentTokenAddress).transferFrom(
+            msg.sender,
+            address(this),
+            _amount
+        );
+
+        uint256 nftDropId = _getNftDrop(_tokenIds[0]);
+        uint256 totalClaim = totalShareEarnings[nftDropId];
+        _setClaimed(nftDropId, _tokenIds, totalClaim);
+        _claimNftShare(address(this), msg.sender, _tokenIds);
+        emit SharesBought(msg.sender, _tokenIds);
     }
 
     /**
@@ -226,6 +254,31 @@ contract NFTDrop is
     }
 
     /**
+     * @dev Returns the share to the contract from an investor.
+     */
+    function returnShare(
+        address _from,
+        address _to,
+        uint256[] calldata _tokenIds
+    ) external onlyRole(ADMIN) {
+        _claimNftShare(_from, _to, _tokenIds);
+    }
+
+    /**
+     * @notice Whitelists multiple users to be available for shares.
+     * @dev Also deWhitelists users by setting to false.
+     */
+    function setWhitelisted(address[] calldata _users, bool _whitelisted)
+        external
+        onlyRole(ADMIN)
+    {
+        uint256 length = _users.length;
+        for (uint256 i = 0; i < length; i++) {
+            isWhitelisted[_users[i]] = _whitelisted;
+        }
+    }
+
+    /**
      * @notice Calculates and adds the earnings to a drop.
      * @dev Add total earnings per deposit. If its a total of 10
      * deposits with a total of 10 eth, add 1 eth per time etc.
@@ -252,6 +305,7 @@ contract NFTDrop is
     /**
      * @dev Add earnings into contract to later be added to the respecive drops.
      */
+    // hur vi har nu är att den transferar direkt från rewardtoken addressen
     function _addEarnings(
         address _from,
         uint256 _nftDropId,

@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-    "txHash": "0x869fe968433f328f19eede9489d85ec60f1bb0c44c4bdd7ef85dec94394d1dd4"
+    "txHash": "0x40eaf58bcc188e5901497929e5ac00325b06ff9621d5e6adab92f222a81e41a1"
   },
   "proxies": [
     {
@@ -21,20 +21,40 @@
       "kind": "transparent"
     },
     {
+      "address": "0x9A676e781A523b5d0C0e43731313A708CB607508",
+      "txHash": "0xe91217649fbc1a1438a73fe34efa6b151c72e180663f22165c91dd0d9bb4617a",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
+      "txHash": "0xfc804c5f260e728340388a163c0dcfb82c249eaa39466acdb783d1c73fb88ace",
+      "kind": "transparent"
+    },
+    {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0xf6fc840290799e499ad2d56e8b70b664ca033b2495b42468e17628f4cdf3a79f",
+      "txHash": "0xdfbd4a242bf6e1d3c755c62ae5821173bd5c299e0f6bba36d9db441c94779724",
       "kind": "transparent"
     },
     {
       "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      "txHash": "0x94a5d790c13d76eeb20864c65bb1d7da7c68a12c1905b5ad96e3664dc894ac23",
+      "txHash": "0x93c8a65c6ea4900f31379ba5a9beb3febdd486c5aebdb7e5b75f79a509f34659",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
+      "txHash": "0x293a572cc0f0f7ddc6f3f2261f75b224bfbdee5bbad8d3ca24dcb2594f9b8082",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+      "txHash": "0xfd49874a2aad8287e5d354f2f3a20900b954957bd4d5a11f709ee596c5969ca0",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "a533baa2fae6ec119c18dce534ad2c8c88fcb406f320441e675b9ea0904a6e26": {
+    "bf8a8f85f092f4a8a5d85de38d39241b4a27f2306991bb2a9217881488b07d6a": {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x85c0c0a42754dc9e22d3b20cad5bdc63d58f9cc0be23182050e679f06c5189c0",
+      "txHash": "0x7a158fb4ec598369701b93e1a587b0550acfeb3ce5a6abdc5b94a9bfc559cf22",
       "layout": {
         "solcVersion": "0.8.4",
         "storage": [
@@ -163,9 +183,9 @@
             "label": "CNR",
             "offset": 0,
             "slot": "251",
-            "type": "t_contract(ICNR)3351",
+            "type": "t_contract(ICNR)3490",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:59"
+            "src": "contracts/NFTDrop.sol:63"
           },
           {
             "label": "isWhitelisted",
@@ -173,7 +193,7 @@
             "slot": "252",
             "type": "t_mapping(t_address,t_bool)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:60"
+            "src": "contracts/NFTDrop.sol:64"
           },
           {
             "label": "pausedTransfers",
@@ -181,7 +201,15 @@
             "slot": "253",
             "type": "t_bool",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:62"
+            "src": "contracts/NFTDrop.sol:66"
+          },
+          {
+            "label": "whitelistDisabled",
+            "offset": 1,
+            "slot": "253",
+            "type": "t_bool",
+            "contract": "NFTDrop",
+            "src": "contracts/NFTDrop.sol:67"
           },
           {
             "label": "dropPaused",
@@ -189,7 +217,7 @@
             "slot": "254",
             "type": "t_mapping(t_uint256,t_bool)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:63"
+            "src": "contracts/NFTDrop.sol:68"
           },
           {
             "label": "nextId",
@@ -197,7 +225,7 @@
             "slot": "255",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:65"
+            "src": "contracts/NFTDrop.sol:70"
           },
           {
             "label": "lastId",
@@ -205,7 +233,7 @@
             "slot": "256",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:66"
+            "src": "contracts/NFTDrop.sol:71"
           },
           {
             "label": "rewardToken",
@@ -213,7 +241,7 @@
             "slot": "257",
             "type": "t_mapping(t_uint256,t_contract(IERC20Upgradeable)768)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:68"
+            "src": "contracts/NFTDrop.sol:73"
           },
           {
             "label": "totalShareEarnings",
@@ -221,7 +249,7 @@
             "slot": "258",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:69"
+            "src": "contracts/NFTDrop.sol:74"
           },
           {
             "label": "claimedEarnings",
@@ -229,7 +257,7 @@
             "slot": "259",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:70"
+            "src": "contracts/NFTDrop.sol:75"
           },
           {
             "label": "nftDropIdToNftCap",
@@ -237,39 +265,47 @@
             "slot": "260",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:72"
+            "src": "contracts/NFTDrop.sol:77"
+          },
+          {
+            "label": "lastNFTBoughtOrClaimed",
+            "offset": 0,
+            "slot": "261",
+            "type": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)",
+            "contract": "NFTDrop",
+            "src": "contracts/NFTDrop.sol:78"
+          },
+          {
+            "label": "lastBoughtOrClaimed",
+            "offset": 0,
+            "slot": "262",
+            "type": "t_uint256",
+            "contract": "NFTDrop",
+            "src": "contracts/NFTDrop.sol:79"
           },
           {
             "label": "serverPubKey",
             "offset": 0,
-            "slot": "261",
+            "slot": "263",
             "type": "t_address",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:74"
+            "src": "contracts/NFTDrop.sol:81"
           },
           {
             "label": "name_",
             "offset": 0,
-            "slot": "262",
+            "slot": "264",
             "type": "t_string_storage",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:75"
+            "src": "contracts/NFTDrop.sol:82"
           },
           {
             "label": "symbol_",
             "offset": 0,
-            "slot": "263",
+            "slot": "265",
             "type": "t_string_storage",
             "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:76"
-          },
-          {
-            "label": "whitelistDisabled",
-            "offset": 0,
-            "slot": "264",
-            "type": "t_bool",
-            "contract": "NFTDrop",
-            "src": "contracts/NFTDrop.sol:78"
+            "src": "contracts/NFTDrop.sol:83"
           }
         ],
         "types": {
@@ -289,6 +325,10 @@
             "label": "uint256[50]",
             "numberOfBytes": "1600"
           },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
           "t_bool": {
             "label": "bool",
             "numberOfBytes": "1"
@@ -297,7 +337,7 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_contract(ICNR)3351": {
+          "t_contract(ICNR)3490": {
             "label": "contract ICNR",
             "numberOfBytes": "20"
           },
@@ -323,6 +363,10 @@
           },
           "t_mapping(t_uint256,t_address)": {
             "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+            "label": "mapping(uint256 => uint256[])",
             "numberOfBytes": "32"
           },
           "t_mapping(t_uint256,t_bool)": {

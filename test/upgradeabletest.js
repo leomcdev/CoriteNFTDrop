@@ -50,7 +50,7 @@ describe("Test", function () {
 
     console.log("current asset cap", await nftdrop.getNftDropCap(1));
 
-    await nftdrop.updateNftDrop(1, 1000);
+    await nftdrop.updateNftDropCap(1, 1000);
     console.log("asset cap after update", await nftdrop.getNftDropCap(1));
 
     await nftdrop.mintNftDrop(1, 150);
@@ -68,7 +68,7 @@ describe("Test", function () {
 
     await nftdrop.updateServer(provider.address);
 
-    await nftdrop.connect(investor).buyShare(units, prefix, v, r, s);
+    await nftdrop.connect(investor).buyShares(units, prefix, v, r, s);
 
     expect(await nftdrop.ownerOf(1000000002)).to.be.equal(investor.address);
     // console.log(await nftdrop.balanceOf(investor.address));
@@ -93,6 +93,13 @@ describe("Test", function () {
     let ADMIN = await nftdrop.ADMIN();
     await nftdrop.grantRole(ADMIN, owner.address);
     await nftdrop.grantRole(ADMIN, provider.address);
+
+    console.log(await testToken.balanceOf(nftdrop.address));
+
+    await testToken.approve(nftdrop.address, 1000);
+    await nftdrop.createNftDrop(1, 1000, testToken.address);
+    await nftdrop.mintNftDrop(1, 500);
+    await nftdrop.addEarnings(1, 500, 500, 1); // 5 earning times totalt
   });
   async function createSignature(obj) {
     obj = ethers.utils.arrayify(obj);
