@@ -224,8 +224,8 @@ contract NFTDrop is
             _amount
         );
 
-        uint256 nftDropId = _getNftDrop(_tokenIds[0]);
-        uint256 totalClaim = totalShareEarnings[nftDropId];
+        uint256 nftDropId = _getNftDrop(_tokenIds[0]); // hämtar 1 tex
+        uint256 totalClaim = totalShareEarnings[nftDropId]; // hämtar totala earnings
         _setClaimed(nftDropId, _tokenIds, totalClaim);
         _claimNftShare(address(this), msg.sender, _tokenIds);
         emit SharesBought(msg.sender, _tokenIds);

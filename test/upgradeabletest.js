@@ -47,6 +47,7 @@ describe("Test", function () {
     await nftdrop.setWhitelisted([investor.address], true);
     console.log(investor.address);
     let units = [1000000000, 1000000001, 1000000002];
+    let units1 = [1000000003, 1000000004, 1000000005];
 
     console.log("current asset cap", await nftdrop.getNftDropCap(1));
 
@@ -60,18 +61,32 @@ describe("Test", function () {
       await nftdrop.getTotalMinted(1)
     );
 
-    let obj = ethers.utils.defaultAbiCoder.encode(
-      ["address", "address", "uint[]"],
-      [investor.address, nftdrop.address, units]
+    // let obj = ethers.utils.defaultAbiCoder.encode(
+    //   ["address", "address", "uint[]"],
+    //   [investor.address, nftdrop.address, units]
+    // );
+    // const { prefix, v, r, s } = await createSignature(obj);
+
+    let objBuy = ethers.utils.defaultAbiCoder.encode(
+      ["address", "address", "uint[]", "uint", "address"],
+      [investor.address, nftdrop.address, units, 5, testToken.address]
     );
-    const { prefix, v, r, s } = await createSignature(obj);
+    const { prefix, v, r, s } = await createSignature(objBuy);
 
     await nftdrop.updateServer(provider.address);
+    await testToken.approve(nftdrop.address, 1000000000000000);
+    await testToken.increaseAllowance(nftdrop.address, 1000000000000000);
+    await testToken.connect(investor).approve(nftdrop.address, 10000000);
 
-    await nftdrop.connect(investor).claimShares(units, prefix, v, r, s);
+    // await nftdrop.connect(investor).claimShares(units, prefix, v, r, s);
+    await nftdrop
+      .connect(investor)
+      .buyShares(units, 5, testToken.address, prefix, v, r, s);
 
     expect(await nftdrop.ownerOf(1000000002)).to.be.equal(investor.address);
-    // console.log(await nftdrop.balanceOf(investor.address));
+    console.log(await nftdrop.balanceOf(investor.address));
+
+    console.log("bal", await testToken.balanceOf(nftdrop.address));
 
     console.log(
       "hash admin",
@@ -79,6 +94,7 @@ describe("Test", function () {
       nftdrop.address
     );
   });
+
   it("test claim earnings", async function () {
     const NFTDrop = await ethers.getContractFactory("NFTDrop");
     const nftdrop = await upgrades.deployProxy(
@@ -97,6 +113,11 @@ describe("Test", function () {
     console.log(await testToken.balanceOf(nftdrop.address));
 
     await testToken.approve(nftdrop.address, 1000000000000000);
+
+    await testToken
+      .connect(investor)
+      .approve(nftdrop.address, 1000000000000000);
+
     await testToken.increaseAllowance(nftdrop.address, 1000000000000000);
     // await testToken.faucetTo(
     //   nftdrop.address,
