@@ -142,10 +142,9 @@ contract NFTDrop is
     }
 
     /**
-     * @notice Lets user claim their share in the form of nfts
-     * @dev Requires server sig and the token drop to exist.
-     */
+     * @notice Add earnings into contract to later be added to the respecive assets.
 
+     */
     function sendSharesToUser(
         uint256 _assetId,
         address _to,
