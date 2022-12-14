@@ -329,46 +329,6 @@ contract NFTDrop is
     }
 
     /**
-     * @notice Calculates and adds the earnings to a drop.
-     * @dev Add total earnings per deposit. If its a total of 10
-     * deposits with a total of 10 eth, add 1 eth per time etc.
-     */
-    function addEarnings(
-        uint256 _nftDropId,
-        uint256 _totalEarningsPerTime, // total earnings
-        uint256 _sharesCount, // how many nfts total for the drop
-        uint256 _earningsAmountPerNFT // earnings amount per nft for corite
-    ) external onlyRole(ADMIN) {
-        require(
-            _totalEarningsPerTime / _sharesCount == _earningsAmountPerNFT,
-            "Invalid input data"
-        );
-        _addEarnings(
-            msg.sender,
-            _nftDropId,
-            _totalEarningsPerTime,
-            _earningsAmountPerNFT
-        );
-    }
-
-    /**
-     * @dev Add earnings into contract to later be added to the respecive drops.
-     */
-    function _addEarnings(
-        address _from,
-        uint256 _nftDropId,
-        uint256 _totalEarnings,
-        uint256 _amountPerNFT
-    ) internal {
-        totalShareEarnings[_nftDropId] += _amountPerNFT;
-        rewardToken[_nftDropId].transferFrom(
-            _from,
-            address(this),
-            _totalEarnings
-        );
-    }
-
-    /**
      * @notice Query all nfts from a specific holder
      */
     function getAllNFTsOfOwner(address _owner)
