@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-    "txHash": "0x1fa89295c2349bf529b2ecb74ba0c187ac4e529b9e9291d6c3240cea1fd782c1"
+    "txHash": "0xf58b036f2ca7a9f320e3f52cb732c5bad4534e5cf1a047c0f360d3bd5ad0bb87"
   },
   "proxies": [
     {
@@ -47,29 +47,29 @@
     },
     {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0xeed9d68938d3c236f37cabb303abd2391387c3f2a6b0500ab2d2f2abe7fe77b2",
+      "txHash": "0xb8ceae6422dee4decbba7ac248bce829a8475a23e7e48cd998959f223f3a8a22",
       "kind": "transparent"
     },
     {
       "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      "txHash": "0xd2367661de9ca643eb923d6b7dce5aa54998879a8e2cc089a182e0532317aca9",
+      "txHash": "0x174113b41ffabb8d19bc0c1a813f106b5831375c1f111b8a64bbc765cd39d395",
       "kind": "transparent"
     },
     {
       "address": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
-      "txHash": "0x3849c844066111056d924238ac0468741fe4d20155f20b1813133ff445eaa7b8",
+      "txHash": "0x989f0d4cfc60cafb87e72b8175158b1491368613872ce0586eb6b3996c589771",
       "kind": "transparent"
     },
     {
       "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
-      "txHash": "0xc8dd73b5f472f10bc84915fb6db1b5fb955186d2f278809ae2048632cf0e1973",
+      "txHash": "0x389be29e07fb0761b73a194120a4c264b3c19ea3fd7910c0b27b895a58bc661f",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "0df6c37d841869c79aae8b884d010acf8dd784d7abf3299ca45734d29914d375": {
+    "b4ff3e4161d582a57cff71b2d430d357fd9ad1e3ba0fccc28d754ea05ce3c8bb": {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x7bd0437671e6bb7d83dfdd92383becd8c6a88acfc3ef6b903cebb3b3e4b71442",
+      "txHash": "0x9d4d5af0aa573e6d64175d84171c26a69e8b0e6073063b24e3aad7fdb45e922c",
       "layout": {
         "solcVersion": "0.8.4",
         "storage": [
@@ -163,9 +163,49 @@
             "src": "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol:465"
           },
           {
-            "label": "_roles",
+            "label": "_ownedTokens",
             "offset": 0,
             "slot": "151",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))",
+            "contract": "ERC721EnumerableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol:22"
+          },
+          {
+            "label": "_ownedTokensIndex",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "ERC721EnumerableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol:25"
+          },
+          {
+            "label": "_allTokens",
+            "offset": 0,
+            "slot": "153",
+            "type": "t_array(t_uint256)dyn_storage",
+            "contract": "ERC721EnumerableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol:28"
+          },
+          {
+            "label": "_allTokensIndex",
+            "offset": 0,
+            "slot": "154",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "ERC721EnumerableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol:31"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "155",
+            "type": "t_array(t_uint256)46_storage",
+            "contract": "ERC721EnumerableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol:175"
+          },
+          {
+            "label": "_roles",
+            "offset": 0,
+            "slot": "201",
             "type": "t_mapping(t_bytes32,t_struct(RoleData)34_storage)",
             "contract": "AccessControlUpgradeable",
             "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:61"
@@ -173,7 +213,7 @@
           {
             "label": "__gap",
             "offset": 0,
-            "slot": "152",
+            "slot": "202",
             "type": "t_array(t_uint256)49_storage",
             "contract": "AccessControlUpgradeable",
             "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:259"
@@ -181,7 +221,7 @@
           {
             "label": "_paused",
             "offset": 0,
-            "slot": "201",
+            "slot": "251",
             "type": "t_bool",
             "contract": "PausableUpgradeable",
             "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
@@ -189,7 +229,7 @@
           {
             "label": "__gap",
             "offset": 0,
-            "slot": "202",
+            "slot": "252",
             "type": "t_array(t_uint256)49_storage",
             "contract": "PausableUpgradeable",
             "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:116"
@@ -197,15 +237,15 @@
           {
             "label": "CNR",
             "offset": 0,
-            "slot": "251",
-            "type": "t_contract(ICNR)3531",
+            "slot": "301",
+            "type": "t_contract(ICNR)3914",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:63"
           },
           {
             "label": "isWhitelisted",
             "offset": 0,
-            "slot": "252",
+            "slot": "302",
             "type": "t_mapping(t_address,t_bool)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:64"
@@ -213,7 +253,7 @@
           {
             "label": "pausedTransfers",
             "offset": 0,
-            "slot": "253",
+            "slot": "303",
             "type": "t_bool",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:66"
@@ -221,7 +261,7 @@
           {
             "label": "whitelistDisabled",
             "offset": 1,
-            "slot": "253",
+            "slot": "303",
             "type": "t_bool",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:67"
@@ -229,7 +269,7 @@
           {
             "label": "dropPaused",
             "offset": 0,
-            "slot": "254",
+            "slot": "304",
             "type": "t_mapping(t_uint256,t_bool)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:68"
@@ -237,7 +277,7 @@
           {
             "label": "nextId",
             "offset": 0,
-            "slot": "255",
+            "slot": "305",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:70"
@@ -245,7 +285,7 @@
           {
             "label": "lastId",
             "offset": 0,
-            "slot": "256",
+            "slot": "306",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:71"
@@ -253,7 +293,7 @@
           {
             "label": "rewardToken",
             "offset": 0,
-            "slot": "257",
+            "slot": "307",
             "type": "t_mapping(t_uint256,t_contract(IERC20Upgradeable)768)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:73"
@@ -261,7 +301,7 @@
           {
             "label": "totalShareEarnings",
             "offset": 0,
-            "slot": "258",
+            "slot": "308",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:74"
@@ -269,7 +309,7 @@
           {
             "label": "claimedEarnings",
             "offset": 0,
-            "slot": "259",
+            "slot": "309",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:75"
@@ -277,7 +317,7 @@
           {
             "label": "nftDropIdToNftCap",
             "offset": 0,
-            "slot": "260",
+            "slot": "310",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:77"
@@ -285,7 +325,7 @@
           {
             "label": "lastNFTBoughtOrClaimed",
             "offset": 0,
-            "slot": "261",
+            "slot": "311",
             "type": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:78"
@@ -293,7 +333,7 @@
           {
             "label": "lastBoughtOrClaimed",
             "offset": 0,
-            "slot": "262",
+            "slot": "312",
             "type": "t_uint256",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:79"
@@ -301,7 +341,7 @@
           {
             "label": "serverPubKey",
             "offset": 0,
-            "slot": "263",
+            "slot": "313",
             "type": "t_address",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:81"
@@ -309,7 +349,7 @@
           {
             "label": "name_",
             "offset": 0,
-            "slot": "264",
+            "slot": "314",
             "type": "t_string_storage",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:82"
@@ -317,7 +357,7 @@
           {
             "label": "symbol_",
             "offset": 0,
-            "slot": "265",
+            "slot": "315",
             "type": "t_string_storage",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:83"
@@ -331,6 +371,10 @@
           "t_array(t_uint256)44_storage": {
             "label": "uint256[44]",
             "numberOfBytes": "1408"
+          },
+          "t_array(t_uint256)46_storage": {
+            "label": "uint256[46]",
+            "numberOfBytes": "1472"
           },
           "t_array(t_uint256)49_storage": {
             "label": "uint256[49]",
@@ -352,7 +396,7 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_contract(ICNR)3531": {
+          "t_contract(ICNR)3914": {
             "label": "contract ICNR",
             "numberOfBytes": "20"
           },
@@ -366,6 +410,10 @@
           },
           "t_mapping(t_address,t_mapping(t_address,t_bool))": {
             "label": "mapping(address => mapping(address => bool))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+            "label": "mapping(address => mapping(uint256 => uint256))",
             "numberOfBytes": "32"
           },
           "t_mapping(t_address,t_uint256)": {

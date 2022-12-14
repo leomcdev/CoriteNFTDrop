@@ -118,15 +118,14 @@ describe("Test", function () {
       .connect(investor)
       .approve(nftdrop.address, 1000000000000000);
 
-    await testToken.increaseAllowance(nftdrop.address, 1000000000000000);
+    // await testToken.increaseAllowance(nftdrop.address, 1000000000000000);
     // await testToken.faucetTo(
     //   nftdrop.address,
     //   ethers.utils.parseEther("10000000.0")
     // );
-    // await testToken.transfer(nftdrop.address, 10000000);
+    await testToken.transfer(nftdrop.address, 10000000);
     await nftdrop.createNftDrop(1, 1000, testToken.address);
-    await nftdrop.mintNftDrop(1, 500);
-    await nftdrop.addEarnings(1, 500, 500, 1); // 5 earning times totalt
+    await nftdrop.mintNftDrop(1, 200);
 
     console.log("ok", await nftdrop.ownerOf(1000000000));
 
@@ -156,9 +155,17 @@ describe("Test", function () {
 
     await testToken.approve(nftdrop.address, 100000000);
 
-    console.log(await testToken.balanceOf(nftdrop.address));
+    console.log(await testToken.balanceOf(investor.address));
 
-    await nftdrop.claimEarnings(nftdrop.address, 1, arr1);
+    let objBuy = ethers.utils.defaultAbiCoder.encode(
+      ["address", "address", "uint[]", "uint", "uint"],
+      [investor.address, nftdrop.address, arr, 3, 1]
+    );
+
+    const { prefix, v, r, s } = await createSignature(objBuy);
+    await nftdrop.updateServer(provider.address);
+
+    // await nftdrop.connect(investor).claimEarnings(arr, 3, 1, prefix, v, r, s);
   });
   async function createSignature(obj) {
     obj = ethers.utils.arrayify(obj);
