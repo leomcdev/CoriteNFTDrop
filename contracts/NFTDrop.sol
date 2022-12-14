@@ -143,7 +143,6 @@ contract NFTDrop is
 
     /**
      * @notice Add earnings into contract to later be added to the respecive assets.
-
      */
     function sendSharesToUser(
         uint256 _assetId,
@@ -287,6 +286,48 @@ contract NFTDrop is
         }
     }
 
+    function claimEarnings(
+        uint256[] calldata _tokenIds,
+        uint256 _amount,
+        uint256 _nftDropId,
+        bytes memory _prefix,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s
+    ) external whenNotPaused {
+        uint256 length = _tokenIds.length;
+        for (uint256 i = 0; i < length; i++) {
+            require(ownerOf(_tokenIds[i]) == msg.sender, "Invalid token owner");
+            require(
+                _getNftDrop(_tokenIds[i]) == _nftDropId,
+                "Invalid token for asset"
+            );
+        }
+        bytes memory message = abi.encode(
+            msg.sender,
+            address(this),
+            _tokenIds,
+            _amount,
+            _nftDropId
+        );
+        require(
+            ecrecover(
+                keccak256(abi.encodePacked(_prefix, message)),
+                _v,
+                _r,
+                _s
+            ) == serverPubKey,
+            "Invalid signature"
+        );
+
+        rewardToken[_nftDropId].transferFrom(
+            address(this),
+            msg.sender,
+            _amount
+        );
+        emit EarningsClaimed(msg.sender, _nftDropId, _tokenIds);
+    }
+
     /**
      * @notice Calculates and adds the earnings to a drop.
      * @dev Add total earnings per deposit. If its a total of 10
@@ -302,7 +343,6 @@ contract NFTDrop is
             _totalEarningsPerTime / _sharesCount == _earningsAmountPerNFT,
             "Invalid input data"
         );
-
         _addEarnings(
             msg.sender,
             _nftDropId,
