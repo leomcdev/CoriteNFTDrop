@@ -110,7 +110,7 @@ describe("Test", function () {
     await nftdrop.grantRole(ADMIN, owner.address);
     await nftdrop.grantRole(ADMIN, provider.address);
 
-    console.log(await testToken.balanceOf(nftdrop.address));
+    console.log("should be 0", await testToken.balanceOf(nftdrop.address));
 
     await testToken.approve(nftdrop.address, 1000000000000000);
 
@@ -123,10 +123,10 @@ describe("Test", function () {
     //   nftdrop.address,
     //   ethers.utils.parseEther("10000000.0")
     // );
-    await testToken.transfer(nftdrop.address, 10000000);
+    // await testToken.transfer(nftdrop.address, 10000000);
     await nftdrop.createNftDrop(1, 1000, testToken.address);
     await nftdrop.mintNftDrop(1, 500);
-    await nftdrop.addEarnings(1, 500000, 500000, 1); // 5 earning times totalt
+    await nftdrop.addEarnings(1, 500, 500, 1); // 5 earning times totalt
 
     console.log("ok", await nftdrop.ownerOf(1000000000));
 
@@ -139,7 +139,7 @@ describe("Test", function () {
     arr = [1000000000, 1000000001, 1000000002];
     arr1 = [1000000003, 1000000004, 1000000005];
 
-    await nftdrop.setWhitelisted([investor.address], true);
+    await nftdrop.setWhitelisted([investor.address, nftdrop.address], true);
 
     await nftdrop.sendSharesToUser(1, investor.address, 3, arr);
     // await expect(
@@ -154,8 +154,11 @@ describe("Test", function () {
     console.log(await nftdrop.ownerOf(1000000002));
     console.log(await nftdrop.ownerOf(1000000003));
 
-    await nftdrop.setWhitelisted([nftdrop.address], true);
-    // await nftdrop.claimEarnings(nftdrop.address, 1, arr1);
+    await testToken.approve(nftdrop.address, 100000000);
+
+    console.log(await testToken.balanceOf(nftdrop.address));
+
+    await nftdrop.claimEarnings(nftdrop.address, 1, arr1);
   });
   async function createSignature(obj) {
     obj = ethers.utils.arrayify(obj);

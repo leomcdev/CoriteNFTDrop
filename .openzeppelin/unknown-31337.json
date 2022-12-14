@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-    "txHash": "0xa88a1ed40a7e81c5c57765166065562ac2fb9ed58ce52fa3a77a2aac1b03aae0"
+    "txHash": "0x1fa89295c2349bf529b2ecb74ba0c187ac4e529b9e9291d6c3240cea1fd782c1"
   },
   "proxies": [
     {
@@ -47,29 +47,29 @@
     },
     {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x8ef2f953a5d135ab74880d396d802a5f5cde9b9d59ce81d61df68ecfec960bd7",
+      "txHash": "0xeed9d68938d3c236f37cabb303abd2391387c3f2a6b0500ab2d2f2abe7fe77b2",
       "kind": "transparent"
     },
     {
       "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      "txHash": "0x296cd78489abe10be5312fedfe6e00b235e29da433bc40475c56d131c1f915e5",
+      "txHash": "0xd2367661de9ca643eb923d6b7dce5aa54998879a8e2cc089a182e0532317aca9",
       "kind": "transparent"
     },
     {
       "address": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
-      "txHash": "0x753f7193414deb565598f476974f96f914e9bd18698fd6405d4287a1559c6a3e",
+      "txHash": "0x3849c844066111056d924238ac0468741fe4d20155f20b1813133ff445eaa7b8",
       "kind": "transparent"
     },
     {
       "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
-      "txHash": "0x818d6a04001b6c5600e1f93ffd8512507f4d55601ac02ecfa1cccc539a0ce8e3",
+      "txHash": "0xc8dd73b5f472f10bc84915fb6db1b5fb955186d2f278809ae2048632cf0e1973",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "8077cdd02e848382551ff104ab7b782a276c4b7a57607373a950eaac111ca2de": {
+    "0df6c37d841869c79aae8b884d010acf8dd784d7abf3299ca45734d29914d375": {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x95dfb969e675231021a5b7415cbdd86d2e5aa8572f8f88ed7488a5c30b54c7ba",
+      "txHash": "0x7bd0437671e6bb7d83dfdd92383becd8c6a88acfc3ef6b903cebb3b3e4b71442",
       "layout": {
         "solcVersion": "0.8.4",
         "storage": [
@@ -198,7 +198,7 @@
             "label": "CNR",
             "offset": 0,
             "slot": "251",
-            "type": "t_contract(ICNR)4691",
+            "type": "t_contract(ICNR)3531",
             "contract": "NFTDrop",
             "src": "contracts/NFTDrop.sol:63"
           },
@@ -352,7 +352,7 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_contract(ICNR)4691": {
+          "t_contract(ICNR)3531": {
             "label": "contract ICNR",
             "numberOfBytes": "20"
           },

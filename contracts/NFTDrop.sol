@@ -3,7 +3,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
@@ -25,7 +25,7 @@ import "../interfaces/ICNR.sol";
 
 contract NFTDrop is
     Initializable,
-    ERC721Upgradeable,
+    ERC721EnumerableUpgradeable,
     AccessControlUpgradeable,
     PausableUpgradeable
 {
@@ -195,7 +195,7 @@ contract NFTDrop is
     function buyShares(
         uint256[] calldata _tokenIds,
         uint256 _amount,
-        IERC20Upgradeable _rewardToken,
+        IERC20Upgradeable _paymentToken,
         bytes memory _prefix,
         uint8 _v,
         bytes32 _r,
@@ -206,7 +206,7 @@ contract NFTDrop is
             address(this),
             _tokenIds,
             _amount,
-            _rewardToken
+            _paymentToken
         );
         require(
             ecrecover(
@@ -218,7 +218,7 @@ contract NFTDrop is
             "Invalid signature"
         );
 
-        IERC20Upgradeable(_rewardToken).transferFrom(
+        IERC20Upgradeable(_paymentToken).transferFrom(
             msg.sender,
             address(this),
             _amount
@@ -315,7 +315,6 @@ contract NFTDrop is
     /**
      * @dev Add earnings into contract to later be added to the respecive drops.
      */
-    // hur vi har nu är att den transferar direkt från rewardtoken addressen
     function _addEarnings(
         address _from,
         uint256 _nftDropId,
@@ -331,31 +330,20 @@ contract NFTDrop is
     }
 
     /**
-     * @notice Calculates the earnings that each investor can claim.
-     * @dev Adds the new value into claimed earnings and transfers the earnings to the owner.
+     * @notice Query all nfts from a specific holder
      */
-    function claimEarnings(
-        address _owner,
-        uint256 _nftDropId,
-        uint256[] calldata _tokenIds
-    ) external whenNotPaused {
-        require(isWhitelisted[_owner], "Owner is not whitelisted");
-        uint256 totalToGet;
-        uint256 length = _tokenIds.length;
-        uint256 totalEarningsPerNftDrop = totalShareEarnings[_nftDropId];
+    function getAllNFTsOfOwner(address _owner)
+        external
+        view
+        returns (uint256[] memory)
+    {
+        uint256 length = balanceOf(_owner);
+        uint256[] memory tokenIds = new uint256[](length);
+
         for (uint256 i = 0; i < length; i++) {
-            require(ownerOf(_tokenIds[i]) == _owner, "Invalid token owner");
-            require(
-                _getNftDrop(_tokenIds[i]) == _nftDropId,
-                "Invalid token for drop"
-            );
-            totalToGet +=
-                totalEarningsPerNftDrop -
-                claimedEarnings[_tokenIds[i]];
-            claimedEarnings[_tokenIds[i]] = totalEarningsPerNftDrop;
+            tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
         }
-        rewardToken[_nftDropId].transferFrom(address(this), _owner, totalToGet);
-        emit EarningsClaimed(msg.sender, _nftDropId, _tokenIds);
+        return tokenIds;
     }
 
     function updateServer(address _serverPubKey) external onlyRole(ADMIN) {
@@ -464,7 +452,7 @@ contract NFTDrop is
         public
         view
         virtual
-        override(ERC721Upgradeable, AccessControlUpgradeable)
+        override(ERC721EnumerableUpgradeable, AccessControlUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
